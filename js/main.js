@@ -1,4 +1,5 @@
 // globals
+var collidables = [];
 var mouse_sensitivity = { x: 0.002, y: 0.002 };
 var power = 0;
 var max_power = 1;
@@ -71,7 +72,8 @@ camera.add(bow);
 scene.add(camera);
 
 // Create arrow
-var arrow_geometry = new THREE.BoxGeometry(0.5, 0.5, 20);
+var arrow_length = 20;
+var arrow_geometry = new THREE.BoxGeometry(0.5, 0.5, arrow_length);
 var arrow_material = new THREE.MeshBasicMaterial({ color: 0x666666 });
 var arrow_rot_y = -6;
 
@@ -103,7 +105,7 @@ cube.position.y = 5;
 cube.position.z = -30;
 scene.add(cube);
 
-var cylinder_geometry = new THREE.CylinderGeometry(10, 10, 2, 10);
+var cylinder_geometry = new THREE.CylinderGeometry(10, 10, 5, 10);
 var target_material = new THREE.MeshPhongMaterial({ color: 0xE39FBA });
 
 
@@ -111,16 +113,19 @@ var target_01 = new THREE.Mesh(cylinder_geometry, target_material);
 target_01.rotateX(-Math.PI / 2);
 target_01.position.set(0, 13, -100);
 scene.add(target_01);
+collidables.push(target_01);
 
 var target_02 = new THREE.Mesh(cylinder_geometry, target_material);
 target_02.rotateX(-Math.PI / 2);
 target_02.position.set(-30, 13, -130);
 scene.add(target_02);
+collidables.push(target_02);
 
 var target_03 = new THREE.Mesh(cylinder_geometry, target_material);
 target_03.rotateX(-Math.PI / 2);
 target_03.position.set(30, 13, -130);
 scene.add(target_03);
+collidables.push(target_03);
 
 //var target_04 = new THREE.Mesh(cylinder_geometry, target_material);
 //target_04.rotateX(-Math.PI / 2);
@@ -423,10 +428,33 @@ function update_bow(dt) {
 function update_arrow(dt) {
   if (!arrow.fired) return;
 
-  // apply acceleration 
-  arrow.velocity.add( arrow.acceleration.clone().multiplyScalar(dt) );
-  arrow.position.add( arrow.velocity );
+  // calculate movement
+  var new_velocity = arrow.velocity.clone().add( arrow.acceleration.clone().multiplyScalar(dt) );
+  var new_position = arrow.position.clone().add( new_velocity );
 
+  // check collisions
+  //
+  // cast a ray from old position to new position
+  var distance_travelled = arrow.position.distanceTo(new_position);
+  var arrow_direction = arrow.velocity.clone().normalize();
+  //var arrow_tip = arrow.position.clone().add(arrow_direction.multiplyScalar(0.5*arrow_length));
+
+  var ray = new THREE.Raycaster(arrow.position, arrow_direction, 0, distance_travelled);
+  var collision_results = ray.intersectObjects(collidables);
+  if (collision_results.length > 0) { 
+    // move arrow back to where it collided
+    var position_correction = arrow_direction.clone().multiplyScalar(collision_results[0].distance);
+    new_position = arrow.position.clone().add(position_correction);
+    
+    // stop arrow
+    arrow.acceleration.multiplyScalar(0);
+    new_velocity.multiplyScalar(0);
+    console.log('arrow collided');
+  }
+
+  // move arrow
+  arrow.velocity.copy(new_velocity);
+  arrow.position.copy(new_position);
 }
 
 function animate() {
