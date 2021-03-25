@@ -62,11 +62,11 @@ var container = document.getElementById( 'container' );
 
 container.appendChild( renderer.domElement );
 
-var stats = new Stats();
-stats.domElement.style.position = 'absolute';
-stats.domElement.style.top = '0px';
+//var stats = new Stats();
+//stats.domElement.style.position = 'absolute';
+//stats.domElement.style.top = '0px';
 
-container.appendChild( stats.domElement );
+//container.appendChild( stats.domElement );
 
 
 // Create bow
@@ -579,7 +579,7 @@ function animate() {
 
   renderer.render( scene, camera );
 
-  stats.update();
+  //stats.update();
 
   requestAnimationFrame( animate );
 
