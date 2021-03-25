@@ -4,14 +4,9 @@ var mouse_sensitivity = { x: 0.002, y: 0.002 };
 var power = 0;
 var max_power = 1;
 var gravity = 1;
-
 var max_pullback_length = 8;
 var draw_speed = 0.07;
-
 var shoot_strength = 10;
-
-var USE_WIREFRAME = false;
-
 var clock = new THREE.Clock();
 
 var scene = new THREE.Scene();
@@ -59,8 +54,6 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.VSMShadowMap;
 
 var container = document.getElementById( 'container' );
-
-container.appendChild( renderer.domElement );
 
 //var stats = new Stats();
 //stats.domElement.style.position = 'absolute';
@@ -206,20 +199,6 @@ collidables.push(target_03);
 var keyStates = {};
 var is_mouse_down = false;
 
-document.addEventListener( 'keydown', ( event ) => {
-  keyStates[ event.code ] = true;
-});
-
-document.addEventListener( 'keyup', ( event ) => {
-  keyStates[ event.code ] = false;
-});
-
-document.addEventListener( 'mousedown', mouse_down);
-
-document.addEventListener( 'mouseup', mouse_up);
-
-document.body.addEventListener( 'mousemove', move_camera );
-
 function mouse_down(e) {
   if (document.pointerLockElement != document.body) {
     document.body.requestPointerLock();
@@ -251,127 +230,6 @@ function onWindowResize() {
   renderer.setSize( window.innerWidth, window.innerHeight );
 }
 
-document.addEventListener( 'click', () => {
-  //var sphere = spheres[ sphereIdx ];
-
-  //camera.getWorldDirection( playerDirection );
-
-  //sphere.collider.center.copy( playerCollider.end );
-  //sphere.velocity.copy( playerDirection ).multiplyScalar( 30 );
-
-  //sphereIdx = ( sphereIdx + 1 ) % spheres.length;
-
-});
-
-//function playerCollitions() {
-
-  //var result = worldOctree.capsuleIntersect( playerCollider );
-
-  //playerOnFloor = false;
-
-  //if ( result ) {
-
-    //playerOnFloor = result.normal.y > 0;
-
-    //if ( ! playerOnFloor ) {
-
-      //playerVelocity.addScaledVector( result.normal, - result.normal.dot( playerVelocity ) );
-
-    //}
-
-    //playerCollider.translate( result.normal.multiplyScalar( result.depth ) );
-
-  //}
-
-//}
-
-//function updatePlayer( dt ) {
-
-  //if ( playerOnFloor ) {
-
-    //var damping = Math.exp( - 3 * dt ) - 1;
-    //playerVelocity.addScaledVector( playerVelocity, damping );
-
-  //} else {
-
-    //playerVelocity.y -= GRAVITY * dt;
-
-  //}
-
-  //var deltaPosition = playerVelocity.clone().multiplyScalar( dt );
-  //playerCollider.translate( deltaPosition );
-
-  //playerCollitions();
-
-  //camera.position.copy( playerCollider.end );
-
-//}
-
-//function spheresCollisions() {
-
-  //for ( let i = 0; i < spheres.length; i ++ ) {
-
-    //var s1 = spheres[ i ];
-
-    //for ( let j = i + 1; j < spheres.length; j ++ ) {
-
-      //var s2 = spheres[ j ];
-
-      //var d2 = s1.collider.center.distanceToSquared( s2.collider.center );
-      //var r = s1.collider.radius + s2.collider.radius;
-      //var r2 = r * r;
-
-      //if ( d2 < r2 ) {
-
-        //var normal = s1.collider.clone().center.sub( s2.collider.center ).normalize();
-        //var v1 = normal.clone().multiplyScalar( normal.dot( s1.velocity ) );
-        //var v2 = normal.clone().multiplyScalar( normal.dot( s2.velocity ) );
-        //s1.velocity.add( v2 ).sub( v1 );
-        //s2.velocity.add( v1 ).sub( v2 );
-
-        //var d = ( r - Math.sqrt( d2 ) ) / 2;
-
-        //s1.collider.center.addScaledVector( normal, d );
-        //s2.collider.center.addScaledVector( normal, - d );
-
-      //}
-
-    //}
-
-  //}
-
-//}
-
-//function updateSpheres( dt ) {
-
-  //spheres.forEach( sphere =>{
-
-    //sphere.collider.center.addScaledVector( sphere.velocity, dt );
-
-    //var result = worldOctree.sphereIntersect( sphere.collider );
-
-    //if ( result ) {
-
-      //sphere.velocity.addScaledVector( result.normal, - result.normal.dot( sphere.velocity ) * 1.5 );
-      //sphere.collider.center.add( result.normal.multiplyScalar( result.depth ) );
-
-    //} else {
-
-      //sphere.velocity.y -= GRAVITY * dt;
-
-    //}
-
-    //var damping = Math.exp( - 1.5 * dt ) - 1;
-    //sphere.velocity.addScaledVector( sphere.velocity, damping );
-
-    //spheresCollisions();
-
-    //sphere.mesh.position.copy( sphere.collider.center );
-
-  //} );
-
-//}
-
 function getForwardVector() {
   camera.getWorldDirection( playerDirection );
   playerDirection.y = 0;
@@ -388,75 +246,6 @@ function getSideVector() {
 
   return playerDirection;
 }
-
-//function controls( dt ) {
-
-  //var speed = 25;
-
-  //if ( playerOnFloor ) {
-
-    //if ( keyStates[ 'KeyW' ] ) {
-
-      //playerVelocity.add( getForwardVector().multiplyScalar( speed * dt ) );
-
-    //}
-
-    //if ( keyStates[ 'KeyS' ] ) {
-
-      //playerVelocity.add( getForwardVector().multiplyScalar( - speed * dt ) );
-
-    //}
-
-    //if ( keyStates[ 'KeyA' ] ) {
-
-      //playerVelocity.add( getSideVector().multiplyScalar( - speed * dt ) );
-
-    //}
-
-    //if ( keyStates[ 'KeyD' ] ) {
-
-      //playerVelocity.add( getSideVector().multiplyScalar( speed * dt ) );
-
-    //}
-
-    //if ( keyStates[ 'Space' ] ) {
-
-      //playerVelocity.y = 15;
-
-    //}
-
-  //}
-
-//}
-
-//var loader = new GLTFLoader().setPath( './models/gltf/' );
-
-//loader.load( 'collision-world.glb', ( gltf ) => {
-
-  //scene.add( gltf.scene );
-
-  //worldOctree.fromGraphNode( gltf.scene );
-
-  //gltf.scene.traverse( child => {
-
-    //if ( child.isMesh ) {
-
-      //child.castShadow = true;
-      //child.receiveShadow = true;
-
-      //if ( child.material.map ) {
-
-        //child.material.map.anisotropy = 8;
-
-      //}
-
-    //}
-
-  //} );
-
-  //animate();
-
-//} );
 
 function lerp(a,b,x) { return a + (b-a)*x; }
 
@@ -585,4 +374,37 @@ function animate() {
 
 }
 
-animate();
+function init(e) {
+  document.body.requestPointerLock();
+
+  container.appendChild( renderer.domElement );
+
+  document.addEventListener( 'keydown', ( event ) => {
+    keyStates[ event.code ] = true;
+  });
+
+  document.addEventListener( 'keyup', ( event ) => {
+    keyStates[ event.code ] = false;
+  });
+
+  document.addEventListener( 'mousedown', mouse_down);
+
+  document.addEventListener( 'mouseup', mouse_up);
+
+  document.body.addEventListener( 'mousemove', move_camera );
+
+  document.querySelector('.instructions').style.display = 'none';
+
+  animate();
+}
+
+//
+//
+//   
+//
+//
+// --------------------------------------------------------------------------
+
+var start_button = document.getElementById("start");
+start_button.addEventListener("click", init);
+

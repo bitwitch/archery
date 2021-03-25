@@ -3,3 +3,42 @@ body {
   padding: 0;
 }
 
+.title { 
+  font-size: 46px;
+  margin: 25px 0 45px;
+}
+
+.instructions {
+  margin-top: 50px;
+  text-align: center;
+}
+
+.controls {
+  width: 650px;
+  margin: 25px auto 50px auto;
+  font-size: 25px;
+}
+
+.control {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.control .left {
+  font-weight: bold;
+  flex: 0 0 40%;
+  margin-right: 15px;
+}
+
+.control .right {
+  flex: 0 0 60%;
+  margin-left: 15px;
+  text-align: left;
+}
+
+#start {
+  font-size: 25px;
+  padding: 10px;
+  cursor: pointer;
+}
+
